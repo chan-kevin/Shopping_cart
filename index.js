@@ -212,7 +212,18 @@ const Controller = ((model, view) => {
     })
   };
 
-  const handleDelete = () => { };
+  const handleDelete = () => {
+    view.cartListEl.addEventListener("click", (event) => {
+      const element = event.target;
+      const id = element.parentElement.getAttribute("id");
+
+      if (element.className === "cart__delete-btn") {
+        model.deleteFromCart(id).then((data) => {
+          state.cart = state.cart.filter((item) => item.id !== id);
+        })
+      }
+    })
+  };
 
   const handleCheckout = () => {
     view.checkoutBtn.addEventListener("click", (event) => {
@@ -229,6 +240,7 @@ const Controller = ((model, view) => {
       view.renderInventory(state.inventory);
     })
     handleAddToCart();
+    handleDelete();
     handleCheckout();
   };
   return {
