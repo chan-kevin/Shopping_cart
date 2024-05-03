@@ -60,10 +60,12 @@ const Model = (() => {
     #onChange;
     #inventory;
     #cart;
+
     constructor() {
       this.#inventory = [];
       this.#cart = [];
     }
+
     get cart() {
       return this.#cart;
     }
@@ -116,11 +118,11 @@ const View = (() => {
 
     inventory.forEach((item) => {
       const content = item.content;
-      const liTemp = `<li id=${item.id}>
+      const liTemp = `<li id=${item.id} class="item inventory__item">
       <span class="cart__item-name">${content}</span>
-      <button class="cart__subtract">-</button>
+      <button class="cart__subtract cart__btn">-</button>
       <span class="cart__item-amount">${addAmount}</span>
-      <button class="cart__plus">+</button>
+      <button class="cart__plus cart__btn">+</button>
       <button class="cart__add-btn">add to cart</button>
       </li>`
       inventoryTemp += liTemp;
@@ -136,8 +138,10 @@ const View = (() => {
       const content = item.content;
       const amount = item.amount;
 
-      const liTemp = `<li id=${item.id}>
-      <span class="cart__item-name">${content}</span><span> x </span><span class="cart__item-amount">${amount}</span>
+      // <span class="cart__item-name">${content}</span><span> x </span><span class="cart__item-amount">${amount}</span>
+
+      const liTemp = `<li id=${item.id} class="item cart__item">
+      <span class="cart__item-name">${content} x ${amount}</span>
       <button class="cart__delete-btn">delete</button>
       </li>`
 
@@ -167,15 +171,15 @@ const Controller = ((model, view) => {
     view.inventoryListEl.addEventListener("click", (event) => {
       const element = event.target;
 
-      if (element.className === "cart__plus" || element.className === "cart__subtract") {
+      if (element.classList.contains("cart__plus") || element.classList.contains("cart__subtract")) {
         const parentEl = element.parentElement;
         const amountEl = parentEl.querySelector(".cart__item-amount");
         const currentAmount = Number(amountEl.textContent);
 
-        if (element.className === "cart__plus") {
+        if (element.classList.contains("cart__plus")) {
           const updatedAmount = currentAmount + 1;
           amountEl.textContent = updatedAmount;
-        } else if (element.className === "cart__subtract" && currentAmount !== 0) {
+        } else if (element.classList.contains("cart__subtract") && currentAmount !== 0) {
           const updatedAmount = currentAmount - 1;
           amountEl.textContent = updatedAmount;
         }
@@ -187,7 +191,7 @@ const Controller = ((model, view) => {
     view.inventoryListEl.addEventListener("click", (event) => {
       const element = event.target;
 
-      if (element.className === "cart__add-btn") {
+      if (element.classList.contains("cart__add-btn")) {
         const parentEl = element.parentElement;
         const id = parentEl.getAttribute("id");
         const content = parentEl.querySelector(".cart__item-name").textContent;
@@ -225,7 +229,7 @@ const Controller = ((model, view) => {
       const element = event.target;
       const id = element.parentElement.getAttribute("id");
 
-      if (element.className === "cart__delete-btn") {
+      if (element.classList.contains("cart__delete-btn")) {
         model.deleteFromCart(id).then((data) => {
           state.cart = state.cart.filter((item) => item.id !== id);
         })
