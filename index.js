@@ -72,10 +72,18 @@ const Model = (() => {
       return this.#inventory;
     }
 
-    set cart(newCart) { }
-    set inventory(newInventory) { }
+    set cart(newCart) {
+      this.#cart = newCart;
+      this.#onChange();
+    }
+    set inventory(newInventory) {
+      this.#inventory = newInventory;
+      this.#onChange();
+    }
 
-    subscribe(cb) { }
+    subscribe(cb) {
+      this.#onChange = cb;
+    }
   }
   const {
     getCart,
