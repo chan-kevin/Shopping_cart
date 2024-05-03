@@ -109,6 +109,7 @@ const View = (() => {
   const inventoryListEl = document.querySelector(".inventory");
   const cartListEl = document.querySelector(".cart");
   const checkoutBtn = document.querySelector(".checkout-btn");
+  let addAmount = 0;
 
   const renderInventory = (inventory) => {
     let inventoryTemp = "";
@@ -116,8 +117,9 @@ const View = (() => {
     inventory.forEach((item) => {
       const content = item.content;
       const liTemp = `<li id=${item.id}>
+      <span class="cart__item-name">${content}</span>
       <button class="cart__subtract">-</button>
-      <span>${content}</span>
+      <span class="cart__item-amount">${addAmount}</span>
       <button class="cart__plus">+</button>
       <button class="cart__add-btn">add to cart</button>
       </li>`
@@ -135,8 +137,8 @@ const View = (() => {
       const amount = item.amount;
 
       const liTemp = `<li id=${item.id}>
-      <span>${content} x ${amount}</span>
-      <button class="cart__delete-btn">delete</button>"
+      <span class="cart__item-name">${content}</span><span> x </span><span class="cart__item-amount">${amount}</span>
+      <button class="cart__delete-btn">delete</button>
       </li>`
 
       cartTemp += liTemp;
@@ -145,7 +147,7 @@ const View = (() => {
     cartListEl.innerHTML = cartTemp;
   }
 
-  return { renderCart, renderInventory, inventoryListEl, cartListEl, checkoutBtn };
+  return { renderCart, renderInventory, inventoryListEl, cartListEl, checkoutBtn, addAmount };
 })();
 
 const Controller = ((model, view) => {
@@ -163,17 +165,65 @@ const Controller = ((model, view) => {
   };
   const handleUpdateAmount = () => { };
 
-  const handleAddToCart = () => { };
+  const handleAddToCart = () => {
+    view.inventoryListEl.addEventListener("click", (event) => {
+      const element = event.target;
+
+      if (element.className === "cart__plus") {
+        const parentEl = element.parentElement;
+        const amountEl = parentEl.querySelector(".cart__item-amount");
+        const currentAmount = Number(amountEl.textContent);
+        const updatedAmount = currentAmount + 1;
+
+        amountEl.textContent = updatedAmount;
+
+      }
+
+      if (element.className === "cart__add-btn") {
+        const parentEl = element.parentElement;
+        const id = parentEl.getAttribute("id");
+        const content = parentEl.querySelector(".cart__item-name").textContent;
+        const amount = parentEl.querySelector(".cart__item-amount").textContent;
+        const newItem = {
+          id: id,
+          content: content,
+          amount: Number(amount),
+        }
+
+        let update = true;
+        for (let item of state.cart) {
+          if (item.id === id.toString()) {
+            update = false;
+            model.updateCart(id, { ...newItem, amount: item.amount + Number(amount) }).then((data) => {
+              const updatedCart = state.cart.map((item) => {
+                return item.id === id ? { ...item, amount: item.amount + Number(amount) } : item;
+              })
+              state.cart = updatedCart;
+            })
+          }
+        }
+
+        if (update) {
+          model.addToCart(newItem).then((data) => {
+            state.cart = [...state.cart, data];
+          })
+        }
+      }
+    })
+  };
 
   const handleDelete = () => { };
 
-  const handleCheckout = () => { };
+  const handleCheckout = () => {
+
+  };
   const bootstrap = () => {
     init();
     state.subscribe(() => {
       view.renderCart(state.cart);
       view.renderInventory(state.inventory);
     })
+    handleAddToCart();
   };
   return {
     bootstrap,
