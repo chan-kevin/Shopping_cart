@@ -2,22 +2,39 @@ const API = (() => {
   const URL = "http://localhost:3000";
   const getCart = () => {
     // define your method to get cart data
+    return fetch(`${URL}/cart`).then((res) => res.json());
   };
 
   const getInventory = () => {
     // define your method to get inventory data
+    return fetch(`${URL}/inventory`).then((res) => res.json());
   };
 
   const addToCart = (inventoryItem) => {
     // define your method to add an item to cart
+    return fetch(`${URL}/cart`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(inventoryItem)
+    }).then((res) => res.json());
   };
 
   const updateCart = (id, newAmount) => {
     // define your method to update an item in cart
+    return fetch(`${URL}/cart/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newAmount)
+    }).then((res) => res.json());
   };
 
   const deleteFromCart = (id) => {
     // define your method to delete an item in cart
+    return fetch(`${URL}/cart/${id}`, { method: "DELETE" }).then((res) => res.json());
   };
 
   const checkout = () => {
@@ -55,10 +72,10 @@ const Model = (() => {
       return this.#inventory;
     }
 
-    set cart(newCart) {}
-    set inventory(newInventory) {}
+    set cart(newCart) { }
+    set inventory(newInventory) { }
 
-    subscribe(cb) {}
+    subscribe(cb) { }
   }
   const {
     getCart,
@@ -88,15 +105,15 @@ const Controller = ((model, view) => {
   // implement your logic for Controller
   const state = new model.State();
 
-  const init = () => {};
-  const handleUpdateAmount = () => {};
+  const init = () => { };
+  const handleUpdateAmount = () => { };
 
-  const handleAddToCart = () => {};
+  const handleAddToCart = () => { };
 
-  const handleDelete = () => {};
+  const handleDelete = () => { };
 
-  const handleCheckout = () => {};
-  const bootstrap = () => {};
+  const handleCheckout = () => { };
+  const bootstrap = () => { };
   return {
     bootstrap,
   };
