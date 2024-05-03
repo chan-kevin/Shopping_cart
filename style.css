@@ -61,10 +61,8 @@ ul {
     position: absolute;
     bottom: 0;
     width: 85%;
-    text-align: center;
     background-color: black;
     color: white;
-    padding-left: 35%;
     border-radius: 5px;
 }
 
@@ -103,7 +101,6 @@ ul {
     color: white;
     border-radius: 3px;
     background-color: rgb(9, 121, 242);
-    line-height: 0;
 }
 
 .cart__add-btn,
@@ -111,6 +108,9 @@ ul {
 .cart__delete-btn,
 .checkout-btn,
 .art__delete-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
 }
 
