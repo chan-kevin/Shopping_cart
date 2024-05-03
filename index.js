@@ -163,21 +163,29 @@ const Controller = ((model, view) => {
       state.inventory = data;
     })
   };
-  const handleUpdateAmount = () => { };
+  const handleUpdateAmount = () => {
+    view.inventoryListEl.addEventListener("click", (event) => {
+      const element = event.target;
+
+      if (element.className === "cart__plus" || element.className === "cart__subtract") {
+        const parentEl = element.parentElement;
+        const amountEl = parentEl.querySelector(".cart__item-amount");
+        const currentAmount = Number(amountEl.textContent);
+
+        if (element.className === "cart__plus") {
+          const updatedAmount = currentAmount + 1;
+          amountEl.textContent = updatedAmount;
+        } else if (element.className === "cart__subtract" && currentAmount !== 0) {
+          const updatedAmount = currentAmount - 1;
+          amountEl.textContent = updatedAmount;
+        }
+      }
+    })
+  };
 
   const handleAddToCart = () => {
     view.inventoryListEl.addEventListener("click", (event) => {
       const element = event.target;
-
-      if (element.className === "cart__plus") {
-        const parentEl = element.parentElement;
-        const amountEl = parentEl.querySelector(".cart__item-amount");
-        const currentAmount = Number(amountEl.textContent);
-        const updatedAmount = currentAmount + 1;
-
-        amountEl.textContent = updatedAmount;
-
-      }
 
       if (element.className === "cart__add-btn") {
         const parentEl = element.parentElement;
@@ -239,6 +247,7 @@ const Controller = ((model, view) => {
       view.renderCart(state.cart);
       view.renderInventory(state.inventory);
     })
+    handleUpdateAmount();
     handleAddToCart();
     handleDelete();
     handleCheckout();
