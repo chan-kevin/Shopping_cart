@@ -119,7 +119,7 @@ const View = (() => {
       <button class="cart__subtract">-</button>
       <span>${content}</span>
       <button class="cart__plus">+</button>
-      <button class="cart__add-btn">add to cart</button>"
+      <button class="cart__add-btn">add to cart</button>
       </li>`
       inventoryTemp += liTemp;
     })
@@ -152,7 +152,15 @@ const Controller = ((model, view) => {
   // implement your logic for Controller
   const state = new model.State();
 
-  const init = () => { };
+  const init = () => {
+    model.getCart().then((data) => {
+      state.cart = data;
+    })
+
+    model.getInventory().then((data) => {
+      state.inventory = data;
+    })
+  };
   const handleUpdateAmount = () => { };
 
   const handleAddToCart = () => { };
@@ -160,7 +168,13 @@ const Controller = ((model, view) => {
   const handleDelete = () => { };
 
   const handleCheckout = () => { };
-  const bootstrap = () => { };
+  const bootstrap = () => {
+    init();
+    state.subscribe(() => {
+      view.renderCart(state.cart);
+      view.renderInventory(state.inventory);
+    })
+  };
   return {
     bootstrap,
   };
