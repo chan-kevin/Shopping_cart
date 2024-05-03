@@ -138,8 +138,6 @@ const View = (() => {
       const content = item.content;
       const amount = item.amount;
 
-      // <span class="cart__item-name">${content}</span><span> x </span><span class="cart__item-amount">${amount}</span>
-
       const liTemp = `<li id=${item.id} class="item cart__item">
       <span class="cart__item-name">${content} x ${amount}</span>
       <button class="cart__delete-btn">delete</button>
@@ -215,7 +213,7 @@ const Controller = ((model, view) => {
           }
         }
 
-        if (update) {
+        if (update && Number(amount) !== 0) {
           model.addToCart(newItem).then((data) => {
             state.cart = [...state.cart, data];
           })
