@@ -106,7 +106,46 @@ const Model = (() => {
 
 const View = (() => {
   // implement your logic for View
-  return {};
+  const inventoryListEl = document.querySelector(".inventory");
+  const cartListEl = document.querySelector(".cart");
+  const checkoutBtn = document.querySelector(".checkout-btn");
+
+  const renderInventory = (inventory) => {
+    let inventoryTemp = "";
+
+    inventory.forEach((item) => {
+      const content = item.content;
+      const liTemp = `<li id=${item.id}>
+      <button class="cart__subtract">-</button>
+      <span>${content}</span>
+      <button class="cart__plus">+</button>
+      <button class="cart__add-btn">add to cart</button>"
+      </li>`
+      inventoryTemp += liTemp;
+    })
+
+    inventoryListEl.innerHTML = inventoryTemp;
+  }
+
+  const renderCart = (cart) => {
+    let cartTemp = "";
+
+    cart.forEach((item) => {
+      const content = item.content;
+      const amount = item.amount;
+
+      const liTemp = `<li id=${item.id}>
+      <span>${content} x ${amount}</span>
+      <button class="cart__delete-btn">delete</button>"
+      </li>`
+
+      cartTemp += liTemp;
+    })
+
+    cartListEl.innerHTML = cartTemp;
+  }
+
+  return { renderCart, renderInventory, inventoryListEl, cartListEl, checkoutBtn };
 })();
 
 const Controller = ((model, view) => {
