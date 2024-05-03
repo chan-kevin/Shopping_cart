@@ -215,8 +215,13 @@ const Controller = ((model, view) => {
   const handleDelete = () => { };
 
   const handleCheckout = () => {
-
+    view.checkoutBtn.addEventListener("click", (event) => {
+      model.checkout().then((data) => {
+        state.cart = [];
+      })
+    })
   };
+
   const bootstrap = () => {
     init();
     state.subscribe(() => {
@@ -224,6 +229,7 @@ const Controller = ((model, view) => {
       view.renderInventory(state.inventory);
     })
     handleAddToCart();
+    handleCheckout();
   };
   return {
     bootstrap,
