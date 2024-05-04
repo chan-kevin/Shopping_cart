@@ -60,10 +60,20 @@ const Model = (() => {
     #onChange;
     #inventory;
     #cart;
+    #currentIndex;
+    #itemsPerPage;
+    #pageNum;
+    #amount;
+    #prevIndex;
 
     constructor() {
       this.#inventory = [];
       this.#cart = [];
+      this.#currentIndex = 0;
+      this.#itemsPerPage = 3;
+      this.#pageNum = 0;
+      this.#amount = 0;
+      this.#prevIndex = this.#currentIndex;
     }
 
     get cart() {
@@ -74,13 +84,44 @@ const Model = (() => {
       return this.#inventory;
     }
 
+    get currentIndex() {
+      return this.#currentIndex;
+    }
+
+    get itemsPerPage() {
+      return this.#itemsPerPage;
+    }
+
+    get pageNum() {
+      return this.#pageNum;
+    }
+
+    get amount() {
+      return this.#amount;
+    }
+
+    get prevIndex() {
+      return this.#prevIndex;
+    }
+
+    set prevIndex(newIndex) {
+      this.#prevIndex = newIndex;
+    }
+
+    set currentIndex(newIndex) {
+      this.#currentIndex = newIndex;
+    }
+
+    set pageNum(newPageNum) {
+      this.#pageNum = newPageNum;
+    }
+
     set cart(newCart) {
       this.#cart = newCart;
       this.#onChange();
     }
     set inventory(newInventory) {
       this.#inventory = newInventory;
-      this.#onChange();
     }
 
     subscribe(cb) {
@@ -111,23 +152,47 @@ const View = (() => {
   const inventoryListEl = document.querySelector(".inventory");
   const cartListEl = document.querySelector(".cart");
   const checkoutBtn = document.querySelector(".checkout-btn");
-  let addAmount = 0;
+  const pageButtonContainerEl = document.querySelector(".pagination__pages");
+  const pageButtonEl = document.querySelector(".pagination");
 
-  const renderInventory = (inventory) => {
+  const renderPagination = (data, state, handlePageNum) => {
+    const totalItemCount = data.length;
+    state.pageNum = Math.ceil(totalItemCount / state.itemsPerPage);
+
+    for (let i = 0; i < state.pageNum; i++) {
+      let button = document.createElement("button");
+      button.classList.add("pagination__page-num");
+      button.setAttribute("id", `page-${i}`);
+      button.addEventListener("click", () => {
+        renderInventory(data, i, state);
+        handlePageNum(i, state.prevIndex);
+      })
+      button.innerHTML = i + 1;
+      pageButtonContainerEl.appendChild(button);
+    }
+  }
+
+  const renderInventory = (data, pageIndex, state) => {
     let inventoryTemp = "";
 
-    inventory.forEach((item) => {
-      const content = item.content;
-      const liTemp = `<li id=${item.id} class="item inventory__item">
-      <span class="cart__item-name">${content}</span>
-      <button class="cart__subtract cart__btn">-</button>
-      <span class="cart__item-amount">${addAmount}</span>
-      <button class="cart__plus cart__btn">+</button>
-      <button class="cart__add-btn">add to cart</button>
-      </li>`
-      inventoryTemp += liTemp;
-    })
-
+    state.prevIndex = state.currentIndex;
+    state.currentIndex = pageIndex;
+    const start = pageIndex * state.itemsPerPage;
+    const end = start + state.itemsPerPage;
+    for (let i = start; i < end; i++) {
+      if (data[i]) {
+        const item = data[i];
+        const content = item.content;
+        const liTemp = `<li id=${item.id} class="item inventory__item">
+        <span class="inventory__item-name">${content}</span>
+        <button class="inventory__subtract cart__btn">-</button>
+        <span class="inventory__item-amount">${state.amount}</span>
+        <button class="inventory__plus cart__btn">+</button>
+        <button class="inventory__add-btn cart__btn">add to cart</button>
+        </li>`
+        inventoryTemp += liTemp;
+      }
+    }
     inventoryListEl.innerHTML = inventoryTemp;
   }
 
@@ -149,7 +214,7 @@ const View = (() => {
     cartListEl.innerHTML = cartTemp;
   }
 
-  return { renderCart, renderInventory, inventoryListEl, cartListEl, checkoutBtn, addAmount };
+  return { renderCart, renderInventory, inventoryListEl, cartListEl, checkoutBtn, renderPagination, pageButtonEl };
 })();
 
 const Controller = ((model, view) => {
@@ -163,22 +228,26 @@ const Controller = ((model, view) => {
 
     model.getInventory().then((data) => {
       state.inventory = data;
-      view.renderInventory(data);
+      state.prevIndex = state.currentIndex;
+      view.renderPagination(data, state, handlePageNum);
+      view.renderInventory(data, state.currentIndex, state);
+      handlePageNum(state.currentIndex);
     })
   };
+
   const handleUpdateAmount = () => {
     view.inventoryListEl.addEventListener("click", (event) => {
       const element = event.target;
 
-      if (element.classList.contains("cart__plus") || element.classList.contains("cart__subtract")) {
+      if (element.classList.contains("inventory__plus") || element.classList.contains("inventory__subtract")) {
         const parentEl = element.parentElement;
-        const amountEl = parentEl.querySelector(".cart__item-amount");
+        const amountEl = parentEl.querySelector(".inventory__item-amount");
         const currentAmount = Number(amountEl.textContent);
 
-        if (element.classList.contains("cart__plus")) {
+        if (element.classList.contains("inventory__plus")) {
           const updatedAmount = currentAmount + 1;
           amountEl.textContent = updatedAmount;
-        } else if (element.classList.contains("cart__subtract") && currentAmount !== 0) {
+        } else if (element.classList.contains("inventory__subtract") && currentAmount !== 0) {
           const updatedAmount = currentAmount - 1;
           amountEl.textContent = updatedAmount;
         }
@@ -190,11 +259,11 @@ const Controller = ((model, view) => {
     view.inventoryListEl.addEventListener("click", (event) => {
       const element = event.target;
 
-      if (element.classList.contains("cart__add-btn")) {
+      if (element.classList.contains("inventory__add-btn")) {
         const parentEl = element.parentElement;
         const id = parentEl.getAttribute("id");
-        const content = parentEl.querySelector(".cart__item-name").textContent;
-        const amount = parentEl.querySelector(".cart__item-amount").textContent;
+        const content = parentEl.querySelector(".inventory__item-name").textContent;
+        const amount = parentEl.querySelector(".inventory__item-amount").textContent;
         const newItem = {
           id: id,
           content: content,
@@ -244,6 +313,43 @@ const Controller = ((model, view) => {
     })
   };
 
+  const handlePage = () => {
+    view.pageButtonEl.addEventListener("click", (event) => {
+      const element = event.target;
+
+      if (element.classList.contains("pagination__prev-btn") && state.currentIndex >= 1) {
+        state.currentIndex -= 1;
+        model.getInventory().then((data) => {
+          view.renderInventory(data, state.currentIndex, state);
+          handlePageNum(state.currentIndex, state.currentIndex + 1);
+        })
+      } else if (element.classList.contains("pagination__next-btn")) {
+        state.currentIndex += 1;
+        model.getInventory().then((data) => {
+          view.renderInventory(data, state.currentIndex, state);
+          handlePageNum(state.currentIndex, state.currentIndex - 1);
+        })
+      }
+    })
+  }
+
+  const handlePageNum = (currentIndex, prevIndex) => {
+    const currentId = `page-${currentIndex}`;
+    const prevId = `page-${prevIndex}`;
+    const currentButton = document.querySelector(`#${currentId}`);
+    const prevButton = document.querySelector(`#${prevId}`);
+
+    currentButton.style.color = "black";
+    currentButton.style.textDecoration = "none";
+    currentButton.style.fontWeight = "bold";
+
+    if (prevIndex !== undefined) {
+      prevButton.style.color = "rgb(0, 153, 255)";
+      prevButton.style.textDecoration = "underline";
+      prevButton.style.fontWeight = "normal";
+    }
+  }
+
   const bootstrap = () => {
     init();
     state.subscribe(() => {
@@ -253,6 +359,7 @@ const Controller = ((model, view) => {
     handleAddToCart();
     handleDelete();
     handleCheckout();
+    handlePage();
   };
   return {
     bootstrap,
