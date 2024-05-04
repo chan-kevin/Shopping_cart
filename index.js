@@ -163,6 +163,7 @@ const Controller = ((model, view) => {
 
     model.getInventory().then((data) => {
       state.inventory = data;
+      view.renderInventory(data);
     })
   };
   const handleUpdateAmount = () => {
@@ -247,7 +248,6 @@ const Controller = ((model, view) => {
     init();
     state.subscribe(() => {
       view.renderCart(state.cart);
-      view.renderInventory(state.inventory);
     })
     handleUpdateAmount();
     handleAddToCart();
