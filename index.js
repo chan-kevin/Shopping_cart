@@ -257,7 +257,6 @@ const Controller = ((model, view) => {
         const parentEl = element.parentElement;
         const id = parentEl.getAttribute("id").split("-")[1];
         const [selectedItem] = state.inventory.filter((item) => item.id === Number(id));
-        console.log(selectedItem)
         const content = selectedItem.content;
         const amount = selectedItem.amount;
         const newItem = {
