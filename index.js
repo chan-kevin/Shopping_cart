@@ -63,7 +63,6 @@ const Model = (() => {
     #currentIndex;
     #itemsPerPage;
     #pageNum;
-    #amount;
 
     constructor() {
       this.#inventory = [];
@@ -71,7 +70,6 @@ const Model = (() => {
       this.#currentIndex = 0;
       this.#itemsPerPage = 3;
       this.#pageNum = 0;
-      this.#amount = 0;
     }
 
     get cart() {
@@ -92,10 +90,6 @@ const Model = (() => {
 
     get pageNum() {
       return this.#pageNum;
-    }
-
-    get amount() {
-      return this.#amount;
     }
 
     set currentIndex(newIndex) {
