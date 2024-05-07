@@ -122,6 +122,7 @@ const Model = (() => {
     }
     set inventory(newInventory) {
       this.#inventory = newInventory;
+      this.#onChange();
     }
 
     subscribe(cb) {
@@ -186,7 +187,7 @@ const View = (() => {
         const liTemp = `<li id=${item.id} class="item inventory__item">
         <span class="inventory__item-name">${content}</span>
         <button class="inventory__subtract cart__btn">-</button>
-        <span class="inventory__item-amount">${state.amount}</span>
+        <span class="inventory__item-amount">${item.amount}</span>
         <button class="inventory__plus cart__btn">+</button>
         <button class="inventory__add-btn cart__btn">add to cart</button>
         </li>`
@@ -203,7 +204,7 @@ const View = (() => {
       const content = item.content;
       const amount = item.amount;
 
-      const liTemp = `<li id=${item.id} class="item cart__item">
+      const liTemp = `<li id="${item.id}" class="item cart__item">
       <span class="cart__item-name">${content} x ${amount}</span>
       <button class="cart__delete-btn">delete</button>
       </li>`
@@ -227,10 +228,13 @@ const Controller = ((model, view) => {
     })
 
     model.getInventory().then((data) => {
-      state.inventory = data;
+      const newData = data.map((item) => {
+        return { ...item, amount: 0 };
+      })
+      state.inventory = newData;
       state.prevIndex = state.currentIndex;
       view.renderPagination(data, state, handlePageNum);
-      view.renderInventory(data, state.currentIndex, state);
+      view.renderInventory(state.inventory, state.currentIndex, state);
       handlePageNum(state.currentIndex);
     })
   };
@@ -241,16 +245,18 @@ const Controller = ((model, view) => {
 
       if (element.classList.contains("inventory__plus") || element.classList.contains("inventory__subtract")) {
         const parentEl = element.parentElement;
-        const amountEl = parentEl.querySelector(".inventory__item-amount");
-        const currentAmount = Number(amountEl.textContent);
+        const id = parentEl.getAttribute("id");
 
-        if (element.classList.contains("inventory__plus")) {
-          const updatedAmount = currentAmount + 1;
-          amountEl.textContent = updatedAmount;
-        } else if (element.classList.contains("inventory__subtract") && currentAmount !== 0) {
-          const updatedAmount = currentAmount - 1;
-          amountEl.textContent = updatedAmount;
-        }
+        state.inventory = state.inventory.map((item) => {
+          if (item.id === Number(id)) {
+            if (element.classList.contains("inventory__plus")) {
+              item.amount += 1;
+            } else if (element.classList.contains("inventory__subtract")) {
+              item.amount -= 1;
+            }
+          }
+          return item
+        })
       }
     })
   };
@@ -323,7 +329,7 @@ const Controller = ((model, view) => {
           view.renderInventory(data, state.currentIndex, state);
           handlePageNum(state.currentIndex, state.currentIndex + 1);
         })
-      } else if (element.classList.contains("pagination__next-btn")) {
+      } else if (element.classList.contains("pagination__next-btn") && state.currentIndex < state.pageNum - 1) {
         state.currentIndex += 1;
         model.getInventory().then((data) => {
           view.renderInventory(data, state.currentIndex, state);
@@ -354,6 +360,7 @@ const Controller = ((model, view) => {
     init();
     state.subscribe(() => {
       view.renderCart(state.cart);
+      view.renderInventory(state.inventory, state.currentIndex, state);
     })
     handleUpdateAmount();
     handleAddToCart();
