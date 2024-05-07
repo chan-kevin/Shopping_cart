@@ -184,7 +184,7 @@ const View = (() => {
       if (data[i]) {
         const item = data[i];
         const content = item.content;
-        const liTemp = `<li id=${item.id} class="item inventory__item">
+        const liTemp = `<li id="inventory-${item.id}" class="item inventory__item">
         <span class="inventory__item-name">${content}</span>
         <button class="inventory__subtract cart__btn">-</button>
         <span class="inventory__item-amount">${item.amount}</span>
@@ -204,7 +204,7 @@ const View = (() => {
       const content = item.content;
       const amount = item.amount;
 
-      const liTemp = `<li id="${item.id}" class="item cart__item">
+      const liTemp = `<li id="cart-${item.id}" class="item cart__item">
       <span class="cart__item-name">${content} x ${amount}</span>
       <button class="cart__delete-btn">delete</button>
       </li>`
@@ -233,7 +233,7 @@ const Controller = ((model, view) => {
       })
       state.inventory = newData;
       state.prevIndex = state.currentIndex;
-      view.renderPagination(data, state, handlePageNum);
+      view.renderPagination(state.inventory, state, handlePageNum);
       view.renderInventory(state.inventory, state.currentIndex, state);
       handlePageNum(state.currentIndex);
     })
@@ -245,7 +245,7 @@ const Controller = ((model, view) => {
 
       if (element.classList.contains("inventory__plus") || element.classList.contains("inventory__subtract")) {
         const parentEl = element.parentElement;
-        const id = parentEl.getAttribute("id");
+        const id = parentEl.getAttribute("id").split("-")[1];
 
         state.inventory = state.inventory.map((item) => {
           if (item.id === Number(id)) {
@@ -267,7 +267,7 @@ const Controller = ((model, view) => {
 
       if (element.classList.contains("inventory__add-btn")) {
         const parentEl = element.parentElement;
-        const id = parentEl.getAttribute("id");
+        const id = parentEl.getAttribute("id").split("-")[1];
         const content = parentEl.querySelector(".inventory__item-name").textContent;
         const amount = parentEl.querySelector(".inventory__item-amount").textContent;
         const newItem = {
@@ -301,7 +301,7 @@ const Controller = ((model, view) => {
   const handleDelete = () => {
     view.cartListEl.addEventListener("click", (event) => {
       const element = event.target;
-      const id = element.parentElement.getAttribute("id");
+      const id = element.parentElement.getAttribute("id").split("-")[1];
 
       if (element.classList.contains("cart__delete-btn")) {
         model.deleteFromCart(id).then((data) => {
@@ -325,16 +325,13 @@ const Controller = ((model, view) => {
 
       if (element.classList.contains("pagination__prev-btn") && state.currentIndex >= 1) {
         state.currentIndex -= 1;
-        model.getInventory().then((data) => {
-          view.renderInventory(data, state.currentIndex, state);
-          handlePageNum(state.currentIndex, state.currentIndex + 1);
-        })
+        view.renderInventory(state.inventory, state.currentIndex, state);
+        handlePageNum(state.currentIndex, state.currentIndex + 1);
+
       } else if (element.classList.contains("pagination__next-btn") && state.currentIndex < state.pageNum - 1) {
         state.currentIndex += 1;
-        model.getInventory().then((data) => {
-          view.renderInventory(data, state.currentIndex, state);
-          handlePageNum(state.currentIndex, state.currentIndex - 1);
-        })
+        view.renderInventory(state.inventory, state.currentIndex, state);
+        handlePageNum(state.currentIndex, state.currentIndex - 1);
       }
     })
   }
