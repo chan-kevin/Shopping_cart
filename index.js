@@ -64,7 +64,6 @@ const Model = (() => {
     #itemsPerPage;
     #pageNum;
     #amount;
-    #prevIndex;
 
     constructor() {
       this.#inventory = [];
@@ -73,7 +72,6 @@ const Model = (() => {
       this.#itemsPerPage = 3;
       this.#pageNum = 0;
       this.#amount = 0;
-      this.#prevIndex = this.#currentIndex;
     }
 
     get cart() {
@@ -98,14 +96,6 @@ const Model = (() => {
 
     get amount() {
       return this.#amount;
-    }
-
-    get prevIndex() {
-      return this.#prevIndex;
-    }
-
-    set prevIndex(newIndex) {
-      this.#prevIndex = newIndex;
     }
 
     set currentIndex(newIndex) {
@@ -156,8 +146,8 @@ const View = (() => {
   const pageButtonContainerEl = document.querySelector(".pagination__pages");
   const pageButtonEl = document.querySelector(".pagination");
 
-  const renderPagination = (data, state, handlePageNum) => {
-    const totalItemCount = data.length;
+  const renderPagination = (state, handlePageNum) => {
+    const totalItemCount = state.inventory.length;
     state.pageNum = Math.ceil(totalItemCount / state.itemsPerPage);
 
     for (let i = 0; i < state.pageNum; i++) {
@@ -165,24 +155,23 @@ const View = (() => {
       button.classList.add("pagination__page-num");
       button.setAttribute("id", `page-${i}`);
       button.addEventListener("click", () => {
-        renderInventory(data, i, state);
-        handlePageNum(i, state.prevIndex);
+        renderInventory(state, i);
+        handlePageNum(i);
       })
       button.innerHTML = i + 1;
       pageButtonContainerEl.appendChild(button);
     }
   }
 
-  const renderInventory = (data, pageIndex, state) => {
+  const renderInventory = (state, pageIndex) => {
     let inventoryTemp = "";
 
-    state.prevIndex = state.currentIndex;
     state.currentIndex = pageIndex;
     const start = pageIndex * state.itemsPerPage;
     const end = start + state.itemsPerPage;
     for (let i = start; i < end; i++) {
-      if (data[i]) {
-        const item = data[i];
+      if (state.inventory[i]) {
+        const item = state.inventory[i];
         const content = item.content;
         const liTemp = `<li id="inventory-${item.id}" class="item inventory__item">
         <span class="inventory__item-name">${content}</span>
@@ -232,9 +221,8 @@ const Controller = ((model, view) => {
         return { ...item, amount: 0 };
       })
       state.inventory = newData;
-      state.prevIndex = state.currentIndex;
-      view.renderPagination(state.inventory, state, handlePageNum);
-      view.renderInventory(state.inventory, state.currentIndex, state);
+      view.renderPagination(state, handlePageNum);
+      view.renderInventory(state, state.currentIndex);
       handlePageNum(state.currentIndex);
     })
   };
@@ -251,7 +239,7 @@ const Controller = ((model, view) => {
           if (item.id === Number(id)) {
             if (element.classList.contains("inventory__plus")) {
               item.amount += 1;
-            } else if (element.classList.contains("inventory__subtract")) {
+            } else if (element.classList.contains("inventory__subtract") && item.amount > 0) {
               item.amount -= 1;
             }
           }
@@ -268,8 +256,10 @@ const Controller = ((model, view) => {
       if (element.classList.contains("inventory__add-btn")) {
         const parentEl = element.parentElement;
         const id = parentEl.getAttribute("id").split("-")[1];
-        const content = parentEl.querySelector(".inventory__item-name").textContent;
-        const amount = parentEl.querySelector(".inventory__item-amount").textContent;
+        const [selectedItem] = state.inventory.filter((item) => item.id === Number(id));
+        console.log(selectedItem)
+        const content = selectedItem.content;
+        const amount = selectedItem.amount;
         const newItem = {
           id: id,
           content: content,
@@ -325,39 +315,39 @@ const Controller = ((model, view) => {
 
       if (element.classList.contains("pagination__prev-btn") && state.currentIndex >= 1) {
         state.currentIndex -= 1;
-        view.renderInventory(state.inventory, state.currentIndex, state);
-        handlePageNum(state.currentIndex, state.currentIndex + 1);
+        view.renderInventory(state, state.currentIndex);
+        handlePageNum(state.currentIndex);
 
       } else if (element.classList.contains("pagination__next-btn") && state.currentIndex < state.pageNum - 1) {
         state.currentIndex += 1;
-        view.renderInventory(state.inventory, state.currentIndex, state);
-        handlePageNum(state.currentIndex, state.currentIndex - 1);
+        view.renderInventory(state, state.currentIndex);
+        handlePageNum(state.currentIndex);
       }
     })
   }
 
-  const handlePageNum = (currentIndex, prevIndex) => {
+  const handlePageNum = (currentIndex) => {
     const currentId = `page-${currentIndex}`;
-    const prevId = `page-${prevIndex}`;
-    const currentButton = document.querySelector(`#${currentId}`);
-    const prevButton = document.querySelector(`#${prevId}`);
+    const buttons = document.querySelectorAll(".pagination__page-num");
 
-    currentButton.style.color = "black";
-    currentButton.style.textDecoration = "none";
-    currentButton.style.fontWeight = "bold";
-
-    if (prevIndex !== undefined) {
-      prevButton.style.color = "rgb(0, 153, 255)";
-      prevButton.style.textDecoration = "underline";
-      prevButton.style.fontWeight = "normal";
-    }
+    buttons.forEach((button) => {
+      if (button.id === currentId) {
+        button.style.color = "black";
+        button.style.textDecoration = "none";
+        button.style.fontWeight = "bold";
+      } else {
+        button.style.color = "rgb(0, 153, 255)";
+        button.style.textDecoration = "underline";
+        button.style.fontWeight = "normal";
+      }
+    })
   }
 
   const bootstrap = () => {
     init();
     state.subscribe(() => {
       view.renderCart(state.cart);
-      view.renderInventory(state.inventory, state.currentIndex, state);
+      view.renderInventory(state, state.currentIndex);
     })
     handleUpdateAmount();
     handleAddToCart();
