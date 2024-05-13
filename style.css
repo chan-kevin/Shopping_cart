@@ -10,7 +10,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 60vw;
-  height: 60vh;
+  height: 75vh;
   border: 1px solid black;
   border-radius: 5px;
   background-color: rgb(233, 233, 233);
@@ -18,6 +18,10 @@
 
 ul {
   list-style-type: none;
+}
+
+h1 {
+    padding-bottom: 20px;
 }
 
 .container {
@@ -68,7 +72,8 @@ ul {
   justify-content: space-between;
 }
 
-.inventory__item-name {
+.inventory__item-name,
+.cart__item-name {
   width: 25%;
 }
 
@@ -151,7 +156,7 @@ ul {
 }
 
 .cart {
-  height: 40vh;
+  height: 55vh;
   overflow: scroll;
 }
 

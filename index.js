@@ -56,6 +56,9 @@ const API = (() => {
   };
 })();
 
+const itemsPerPage = 8;
+let pageNum;
+
 const Model = (() => {
   // implement your logic for Model
   class State {
@@ -63,15 +66,12 @@ const Model = (() => {
     #inventory;
     #cart;
     #currentIndex;
-    #itemsPerPage;
-    #pageNum;
+    #displayInventory;
 
     constructor() {
       this.#inventory = [];
       this.#cart = [];
       this.#currentIndex = 0;
-      this.#itemsPerPage = 3;
-      this.#pageNum = 0;
     }
 
     get cart() {
@@ -86,20 +86,16 @@ const Model = (() => {
       return this.#currentIndex;
     }
 
-    get itemsPerPage() {
-      return this.#itemsPerPage;
+    get displayInventory() {
+      return this.#displayInventory;
     }
 
-    get pageNum() {
-      return this.#pageNum;
+    set displayInventory(newDisplayInventory) {
+      this.#displayInventory = newDisplayInventory;
     }
 
     set currentIndex(newIndex) {
       this.#currentIndex = newIndex;
-    }
-
-    set pageNum(newPageNum) {
-      this.#pageNum = newPageNum;
     }
 
     set cart(newCart) {
@@ -144,9 +140,9 @@ const View = (() => {
 
   const renderPagination = (state, handlePageNum) => {
     const totalItemCount = state.inventory.length;
-    state.pageNum = Math.ceil(totalItemCount / state.itemsPerPage);
+    pageNum = Math.ceil(totalItemCount / itemsPerPage);
 
-    for (let i = 0; i < state.pageNum; i++) {
+    for (let i = 0; i < pageNum; i++) {
       let button = document.createElement("button");
       button.classList.add("pagination__page-num");
       button.setAttribute("id", `page-${i}`);
@@ -163,22 +159,20 @@ const View = (() => {
     let inventoryTemp = "";
 
     state.currentIndex = pageIndex;
-    const start = pageIndex * state.itemsPerPage;
-    const end = start + state.itemsPerPage;
-    for (let i = start; i < end; i++) {
-      if (state.inventory[i]) {
-        const item = state.inventory[i];
-        const content = item.content;
-        const liTemp = `<li id="inventory-${item.id}" class="item inventory__item">
-        <span class="inventory__item-name">${content}</span>
+    const start = pageIndex * itemsPerPage;
+    const end = start + itemsPerPage;
+    state.displayInventory = state.inventory.slice(start, end);
+
+    state.displayInventory.forEach((item) => {
+      const liTemp = `<li id="inventory-${item.id}" class="item inventory__item">
+        <span class="inventory__item-name">${item.content}</span>
         <button class="inventory__subtract cart__btn">-</button>
         <span class="inventory__item-amount">${item.amount}</span>
         <button class="inventory__plus cart__btn">+</button>
         <button class="inventory__add-btn cart__btn">add to cart</button>
         </li>`;
-        inventoryTemp += liTemp;
-      }
-    }
+      inventoryTemp += liTemp;
+    });
     inventoryListEl.innerHTML = inventoryTemp;
   };
 
@@ -226,7 +220,6 @@ const Controller = ((model, view) => {
       });
       state.inventory = newData;
       view.renderPagination(state, handlePageNum);
-      view.renderInventory(state, state.currentIndex);
       handlePageNum(state.currentIndex);
     });
   };
@@ -340,7 +333,7 @@ const Controller = ((model, view) => {
         handlePageNum(state.currentIndex);
       } else if (
         element.classList.contains("pagination__next-btn") &&
-        state.currentIndex < state.pageNum - 1
+        state.currentIndex < pageNum - 1
       ) {
         state.currentIndex += 1;
         view.renderInventory(state, state.currentIndex);
