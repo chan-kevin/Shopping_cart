@@ -96,6 +96,7 @@ const Model = (() => {
 
     set currentIndex(newIndex) {
       this.#currentIndex = newIndex;
+      this.#onChange();
     }
 
     set cart(newCart) {
@@ -147,7 +148,7 @@ const View = (() => {
       button.classList.add("pagination__page-num");
       button.setAttribute("id", `page-${i}`);
       button.addEventListener("click", () => {
-        renderInventory(state, i);
+        state.currentIndex = i;
         handlePageNum(i);
       });
       button.innerHTML = i + 1;
@@ -158,7 +159,6 @@ const View = (() => {
   const renderInventory = (state, pageIndex) => {
     let inventoryTemp = "";
 
-    state.currentIndex = pageIndex;
     const start = pageIndex * itemsPerPage;
     const end = start + itemsPerPage;
     state.displayInventory = state.inventory.slice(start, end);
@@ -329,14 +329,12 @@ const Controller = ((model, view) => {
         state.currentIndex >= 1
       ) {
         state.currentIndex -= 1;
-        view.renderInventory(state, state.currentIndex);
         handlePageNum(state.currentIndex);
       } else if (
         element.classList.contains("pagination__next-btn") &&
         state.currentIndex < pageNum - 1
       ) {
         state.currentIndex += 1;
-        view.renderInventory(state, state.currentIndex);
         handlePageNum(state.currentIndex);
       }
     });
