@@ -3,12 +3,14 @@ import "./Cart.css";
 
 export default class Cart extends Component {
   render() {
+    const { cart, handleDelete, handleCheckout } = this.props;
+
     return (
       <div className="cart-container">
         <h1>Shopping Cart</h1>
         <div className="cart-wrapper">
           <ul className="cart">
-            {this.props.cart.map((item) => {
+            {cart.map((item) => {
               return (
                 <li
                   id={`cart-${item.id}`}
@@ -20,7 +22,7 @@ export default class Cart extends Component {
                   </span>
                   <button
                     className="cart__delete-btn"
-                    onClick={() => this.props.handleDelete(item.id)}
+                    onClick={() => handleDelete(item.id)}
                   >
                     delete
                   </button>
@@ -28,7 +30,7 @@ export default class Cart extends Component {
               );
             })}
           </ul>
-          <button className="checkout-btn" onClick={this.props.handleCheckout}>
+          <button className="checkout-btn" onClick={handleCheckout}>
             checkout
           </button>
         </div>

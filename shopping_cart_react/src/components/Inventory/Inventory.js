@@ -1,36 +1,23 @@
 import React, { Component } from "react";
 import "./Inventory.css";
+import Pagination from "../Pagination/Pagination";
 
 export default class Inventory extends Component {
   render() {
-    const pageButtons = [];
+    const {
+      handleDisplayPage,
+      handleAmount,
+      handleAddToCart,
+      currentPage,
+      totalPageNum,
+      inventory,
+    } = this.props;
 
-    for (let i = 0; i < this.props.totalPageNum; i++) {
-      pageButtons.push(
-        <button
-          className="pagination__page-num"
-          id={`page-${i}`}
-          key={`page-${i}`}
-          onClick={() => this.props.handleDisplayPage(i)}
-          style={
-            this.props.currentPage === i
-              ? { color: "black", textDecoration: "none", fontWeight: "bold" }
-              : {
-                  color: "rgb(0, 153, 255)",
-                  textDecoration: "underline",
-                  fontWeight: "normal",
-                }
-          }
-        >
-          {i + 1}
-        </button>
-      );
-    }
     return (
       <div className="inventory-container">
         <h1>Inventory</h1>
         <ul className="inventory">
-          {this.props.inventory.map((item) => {
+          {inventory.map((item) => {
             return (
               <li
                 id={`inventory-${item.id}`}
@@ -40,20 +27,20 @@ export default class Inventory extends Component {
                 <span className="inventory__item-name">{item.content}</span>
                 <button
                   className="inventory__subtract cart__btn"
-                  onClick={() => this.props.handleAmount(item, "subtract")}
+                  onClick={() => handleAmount(item, "subtract")}
                 >
                   -
                 </button>
                 <span className="inventory__item-amount">{item.amount}</span>
                 <button
                   className="inventory__plus cart__btn"
-                  onClick={() => this.props.handleAmount(item, "increment")}
+                  onClick={() => handleAmount(item, "increment")}
                 >
                   +
                 </button>
                 <button
                   className="inventory__add-btn cart__btn"
-                  onClick={() => this.props.handleAddToCart(item)}
+                  onClick={() => handleAddToCart(item)}
                 >
                   add to cart
                 </button>
@@ -61,25 +48,11 @@ export default class Inventory extends Component {
             );
           })}
         </ul>
-        <div className="pagination">
-          <button
-            className="pagination__prev-btn"
-            onClick={() =>
-              this.props.handleDisplayPage(this.props.currentPage - 1)
-            }
-          >
-            Prev
-          </button>
-          <div className="pagination__pages">{pageButtons}</div>
-          <button
-            className="pagination__next-btn"
-            onClick={() =>
-              this.props.handleDisplayPage(this.props.currentPage + 1)
-            }
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPageNum={totalPageNum}
+          handleDisplayPage={handleDisplayPage}
+        />
       </div>
     );
   }
