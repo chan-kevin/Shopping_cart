@@ -13,21 +13,35 @@ import {
 export default class ShoppingCart extends Component {
   constructor(props) {
     super(props);
+    this.itemsPerPage = 8;
+    this.totalPageNum = null;
     this.state = {
       inventory: [],
+      displayInventory: [],
       cart: [],
     };
   }
   async componentDidMount() {
     const inventoryData = await getInventory();
     const cartData = await getCart();
+    this.totalPageNum = Math.ceil(inventoryData.length / this.itemsPerPage);
+
     this.setState({
       inventory: inventoryData.map((item) => {
         return { ...item, amount: 0 };
       }),
       cart: cartData,
+      displayInventory: inventoryData.slice(0, this.itemsPerPage),
     });
   }
+
+  handleDisplayPage = (pageIndex) => {
+    const start = pageIndex * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    console.log(start, end);
+
+    this.setState({ displayInventory: this.state.inventory.slice(start, end) });
+  };
 
   handleAmount = (targetItem, action) => {
     this.setState({
@@ -40,9 +54,8 @@ export default class ShoppingCart extends Component {
           } else if (action === "increment") {
             return { ...item, amount: item.amount + 1 };
           }
-        } else {
-          return item;
         }
+        return item;
       }),
     });
   };
@@ -106,7 +119,7 @@ export default class ShoppingCart extends Component {
     return (
       <div className="container">
         <Inventory
-          inventory={this.state.inventory}
+          inventory={this.state.displayInventory}
           handleAmount={this.handleAmount}
           handleAddToCart={this.handleAddToCart}
         />
