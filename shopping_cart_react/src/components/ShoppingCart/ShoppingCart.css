@@ -37,7 +37,6 @@
 .cart__btn,
 .pagination__prev-btn,
 .pagination__next-btn {
-  width: 30px;
   height: 20px;
   border: none;
   color: white;
@@ -67,7 +66,7 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1075px) {
   .container {
     display: flex;
     flex-direction: column;
@@ -80,5 +79,18 @@
 
   #app {
     height: 90vh;
+  }
+
+  .cart {
+    height: 26vh;
+  }
+
+  .cart-wrapper {
+    height: 32vh;
+  }
+
+  .pagination {
+    bottom: -35px;
+    z-index: 1;
   }
 }

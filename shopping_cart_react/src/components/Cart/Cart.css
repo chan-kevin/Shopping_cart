@@ -19,3 +19,7 @@
   height: 55vh;
   overflow: scroll;
 }
+
+.cart__btn {
+  width: 30px;
+}

@@ -12,6 +12,15 @@ export default class Inventory extends Component {
           id={`page-${i}`}
           key={`page-${i}`}
           onClick={() => this.props.handleDisplayPage(i)}
+          style={
+            this.props.currentPage === i
+              ? { color: "black", textDecoration: "none", fontWeight: "bold" }
+              : {
+                  color: "rgb(0, 153, 255)",
+                  textDecoration: "underline",
+                  fontWeight: "normal",
+                }
+          }
         >
           {i + 1}
         </button>
