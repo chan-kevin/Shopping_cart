@@ -3,6 +3,20 @@ import "./Inventory.css";
 
 export default class Inventory extends Component {
   render() {
+    const pageButtons = [];
+
+    for (let i = 0; i < this.props.totalPageNum; i++) {
+      pageButtons.push(
+        <button
+          className="pagination__page-num"
+          id={`page-${i}`}
+          key={`page-${i}`}
+          onClick={() => this.props.handleDisplayPage(i)}
+        >
+          {i + 1}
+        </button>
+      );
+    }
     return (
       <div className="inventory-container">
         <h1>Inventory</h1>
@@ -39,9 +53,23 @@ export default class Inventory extends Component {
           })}
         </ul>
         <div className="pagination">
-          <button className="pagination__prev-btn">Prev</button>
-          <div className="pagination__pages"></div>
-          <button className="pagination__next-btn">Next</button>
+          <button
+            className="pagination__prev-btn"
+            onClick={() =>
+              this.props.handleDisplayPage(this.props.currentPage - 1)
+            }
+          >
+            Prev
+          </button>
+          <div className="pagination__pages">{pageButtons}</div>
+          <button
+            className="pagination__next-btn"
+            onClick={() =>
+              this.props.handleDisplayPage(this.props.currentPage + 1)
+            }
+          >
+            Next
+          </button>
         </div>
       </div>
     );

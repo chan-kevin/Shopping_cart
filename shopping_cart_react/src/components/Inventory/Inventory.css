@@ -1,3 +1,44 @@
 .inventory {
-    width: 100%;
-  }
+  width: 100%;
+}
+
+.inventory__item {
+  justify-content: space-between;
+}
+
+.inventory__subtract,
+.pagination__prev-btn {
+  background-color: rgb(133, 0, 0);
+}
+
+.inventory__plus,
+.pagination__next-btn {
+  background-color: rgb(4, 173, 4);
+}
+
+.pagination__prev-btn,
+.pagination__next-btn {
+  width: 50px;
+}
+
+.pagination {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.pagination button {
+  height: 30px;
+}
+
+.pagination__page-num {
+  margin-right: 10px;
+  color: rgb(0, 153, 255);
+  border: none;
+  text-decoration: underline;
+  background-color: transparent;
+  font-size: 16px;
+  cursor: pointer;
+}

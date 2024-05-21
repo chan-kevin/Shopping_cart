@@ -17,21 +17,3 @@ ul {
 h1 {
   padding-bottom: 20px;
 }
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  text-align: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  margin-right: 20px;
-  margin-left: 20px;
-  height: 100%;
-}
-
-.inventory-container,
-.cart-container {
-  position: relative;
-  height: 100%;
-}

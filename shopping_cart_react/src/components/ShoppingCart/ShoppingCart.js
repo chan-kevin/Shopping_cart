@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Inventory from "../Inventory/Inventory";
 import Cart from "../Cart/Cart";
+import "./ShoppingCart.css";
 import {
   addToCart,
   checkout,
@@ -13,12 +14,13 @@ import {
 export default class ShoppingCart extends Component {
   constructor(props) {
     super(props);
-    this.itemsPerPage = 8;
+    this.itemsPerPage = 5;
     this.totalPageNum = null;
     this.state = {
       inventory: [],
       displayInventory: [],
       cart: [],
+      currentPage: 0,
     };
   }
   async componentDidMount() {
@@ -26,26 +28,34 @@ export default class ShoppingCart extends Component {
     const cartData = await getCart();
     this.totalPageNum = Math.ceil(inventoryData.length / this.itemsPerPage);
 
+    const displayInventoryData = inventoryData.slice(0, this.itemsPerPage);
+
     this.setState({
       inventory: inventoryData.map((item) => {
         return { ...item, amount: 0 };
       }),
       cart: cartData,
-      displayInventory: inventoryData.slice(0, this.itemsPerPage),
+      displayInventory: displayInventoryData.map((item) => {
+        return { ...item, amount: 0 };
+      }),
     });
   }
 
   handleDisplayPage = (pageIndex) => {
-    const start = pageIndex * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    console.log(start, end);
+    if (pageIndex >= 0 && pageIndex < this.totalPageNum) {
+      const start = pageIndex * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
 
-    this.setState({ displayInventory: this.state.inventory.slice(start, end) });
+      this.setState({
+        displayInventory: this.state.inventory.slice(start, end),
+        currentPage: pageIndex,
+      });
+    }
   };
 
   handleAmount = (targetItem, action) => {
     this.setState({
-      inventory: this.state.inventory.map((item) => {
+      displayInventory: this.state.displayInventory.map((item) => {
         if (item.id === targetItem.id) {
           if (action === "subtract" && item.amount !== 0) {
             return { ...item, amount: item.amount - 1 };
@@ -122,6 +132,9 @@ export default class ShoppingCart extends Component {
           inventory={this.state.displayInventory}
           handleAmount={this.handleAmount}
           handleAddToCart={this.handleAddToCart}
+          totalPageNum={this.totalPageNum}
+          handleDisplayPage={this.handleDisplayPage}
+          currentPage={this.state.currentPage}
         />
         <Cart
           cart={this.state.cart}
