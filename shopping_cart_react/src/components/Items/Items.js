@@ -1,6 +1,6 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 
-export default class Items extends PureComponent {
+export default class Items extends Component {
   render() {
     const { handleAddToCart, handleAmount, item, handleDelete } = this.props;
     const { id, content, amount } = item;
