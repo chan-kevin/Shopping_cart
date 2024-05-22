@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Cart.css";
+import Items from "../Items/Items";
 
 export default class Cart extends Component {
   render() {
@@ -12,21 +13,11 @@ export default class Cart extends Component {
           <ul className="cart">
             {cart.map((item) => {
               return (
-                <li
-                  id={`cart-${item.id}`}
-                  className="item cart__item"
-                  key={item.id}
-                >
-                  <span className="cart__item-name">
-                    {item.content} x {item.amount}
-                  </span>
-                  <button
-                    className="cart__delete-btn"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    delete
-                  </button>
-                </li>
+                <Items
+                  handleDelete={handleDelete}
+                  item={item}
+                  key={`cart-${item.id}`}
+                />
               );
             })}
           </ul>

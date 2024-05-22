@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Inventory.css";
 import Pagination from "../Pagination/Pagination";
+import Items from "../Items/Items";
 
 export default class Inventory extends Component {
   render() {
@@ -19,32 +20,12 @@ export default class Inventory extends Component {
         <ul className="inventory">
           {inventory.map((item) => {
             return (
-              <li
-                id={`inventory-${item.id}`}
-                className="item inventory__item"
-                key={item.id}
-              >
-                <span className="inventory__item-name">{item.content}</span>
-                <button
-                  className="inventory__subtract cart__btn"
-                  onClick={() => handleAmount(item, "subtract")}
-                >
-                  -
-                </button>
-                <span className="inventory__item-amount">{item.amount}</span>
-                <button
-                  className="inventory__plus cart__btn"
-                  onClick={() => handleAmount(item, "increment")}
-                >
-                  +
-                </button>
-                <button
-                  className="inventory__add-btn cart__btn"
-                  onClick={() => handleAddToCart(item)}
-                >
-                  add to cart
-                </button>
-              </li>
+              <Items
+                handleAmount={handleAmount}
+                handleAddToCart={handleAddToCart}
+                item={item}
+                key={`inventory-${item.id}`}
+              />
             );
           })}
         </ul>
