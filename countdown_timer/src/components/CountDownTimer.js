@@ -49,7 +49,7 @@ const CountDownTimer = () => {
     if (value.toString().startsWith("0") && value.length > 1) {
       alert("please enter a number not start with 0");
     } else if (value > 60) {
-      alert("maximum minutes is 60");
+      alert("maximum seconds is 60");
     } else {
       setSeconds(e.target.value);
     }
