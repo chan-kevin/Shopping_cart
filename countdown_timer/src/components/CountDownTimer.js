@@ -83,6 +83,10 @@ const CountDownTimer = () => {
     setSeconds(0);
   };
 
+  const handlePause = () => {
+    if (timerMinutes || timerSeconds) setPause(!pause);
+  };
+
   return (
     <div>
       <h1>Timer</h1>
@@ -96,7 +100,7 @@ const CountDownTimer = () => {
       </div>
 
       <div>
-        <button onClick={() => setPause(!pause)}>PAUSE/RESUME</button>
+        <button onClick={handlePause}>PAUSE/RESUME</button>
         <button onClick={handleReset}>RESET</button>
       </div>
 
