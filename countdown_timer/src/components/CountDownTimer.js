@@ -17,6 +17,7 @@ const CountDownTimer = () => {
               if (prevMin <= 0) {
                 clearInterval(timer.current);
                 setTimerSeconds(0);
+                setPause(true);
                 alert("time's up!");
                 return 0;
               }
@@ -34,26 +35,44 @@ const CountDownTimer = () => {
 
   const handleMinutesInput = (e) => {
     const value = e.target.value;
-    if (value.length <= 2) {
-      setMiutes(e.target.value);
-    } else {
+    if (value.toString().startsWith("0") && value.length > 1) {
+      alert("please enter a number not start with 0");
+    } else if (value > 99) {
       alert("maximum minutes is 99");
+    } else {
+      setMiutes(value);
     }
   };
 
   const handleSecondsInput = (e) => {
     const value = e.target.value;
-    if (value <= 60) {
-      setSeconds(e.target.value);
+    if (value.toString().startsWith("0") && value.length > 1) {
+      alert("please enter a number not start with 0");
+    } else if (value > 60) {
+      alert("maximum minutes is 60");
     } else {
-      alert("maximum seconds is 60");
+      setSeconds(e.target.value);
     }
   };
 
   const handleStart = () => {
-    setTimerMinutes(minutes);
-    setTimerSeconds(seconds);
-    setPause(false);
+    if (minutes === "") {
+      setTimerMinutes(0);
+    } else {
+      setTimerMinutes(minutes);
+    }
+
+    if (seconds === "") {
+      setTimerSeconds(0);
+    } else {
+      setTimerSeconds(seconds);
+    }
+
+    if (minutes || seconds) {
+      setPause(false);
+    } else {
+      alert("please enter a valid time");
+    }
   };
 
   const handleReset = () => {
