@@ -48,10 +48,10 @@ const CountDownTimer = () => {
     const value = e.target.value;
     if (value.toString().startsWith("0") && value.length > 1) {
       alert("please enter a number not start with 0");
-    } else if (value > 60) {
-      alert("maximum seconds is 60");
+    } else if (value > 5999) {
+      alert("maximum is 5999 seconds");
     } else {
-      setSeconds(e.target.value);
+      setSeconds(value);
     }
   };
 
@@ -64,6 +64,17 @@ const CountDownTimer = () => {
 
     if (seconds === "") {
       setTimerSeconds(0);
+    } else if (seconds > 60) {
+      if (minutes + Math.floor(seconds / 60) <= 99) {
+        setTimerMinutes((prev) => Number(prev) + Math.floor(seconds / 60));
+        setTimerSeconds(seconds % 60);
+      } else {
+        alert("reached maximum time");
+        setTimerMinutes(0);
+        setTimerSeconds(0);
+        clearInterval(timer.current);
+        return;
+      }
     } else {
       setTimerSeconds(seconds);
     }
