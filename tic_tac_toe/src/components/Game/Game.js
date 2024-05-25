@@ -122,7 +122,7 @@ const Game = () => {
           handleGameFinished()
         ) : (
           <h3>
-            CurrentPlayer:{" "}
+            Current Player:{" "}
             <span
               style={
                 currentPlayer === "X" ? { color: "blue" } : { color: "red" }
