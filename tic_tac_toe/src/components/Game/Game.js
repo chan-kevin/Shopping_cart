@@ -18,15 +18,18 @@ const Game = () => {
   const handleMove = (rowIndex, colIndex) => {
     if (!gameOver && tileCount < 9) {
       if (board[rowIndex][colIndex].length === 0) {
-        setCurrentPlayer(nextPlayer);
-        setNextPlayer(currentPlayer);
-        setTileCount((prev) => prev + 1);
-
         const newBoard = board.map((row) => [...row]);
         newBoard[rowIndex][colIndex] = currentPlayer;
         setBoard(newBoard);
 
-        if (checkWinning(rowIndex, colIndex)) setGameOver(true);
+        if (checkWinning(rowIndex, colIndex)) {
+          setGameOver(true);
+          return;
+        }
+
+        setCurrentPlayer(nextPlayer);
+        setNextPlayer(currentPlayer);
+        setTileCount((prev) => prev + 1);
       }
     }
   };
@@ -87,10 +90,10 @@ const Game = () => {
             Player{" "}
             <span
               style={
-                currentPlayer === "O" ? { color: "blue" } : { color: "red" }
+                currentPlayer === "X" ? { color: "blue" } : { color: "red" }
               }
             >
-              {nextPlayer}
+              {currentPlayer}
             </span>{" "}
             wins
           </h3>
