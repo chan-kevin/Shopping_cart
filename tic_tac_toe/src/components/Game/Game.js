@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from "react";
-import Board from "./Board/Board";
+import Board from "../Board/Board";
+import "./Game.css";
 
 const Game = () => {
   const row = 3;
@@ -100,11 +101,13 @@ const Game = () => {
   return (
     <>
       <h1>Tic Tac Toe</h1>
-      {gameOver || tileCount === 9 ? (
-        handleGameFinished()
-      ) : (
-        <h3>CurrentPlayer: {currentPlayer}</h3>
-      )}
+      <div className="stats">
+        {gameOver || tileCount === 9 ? (
+          handleGameFinished()
+        ) : (
+          <h3>CurrentPlayer: {currentPlayer}</h3>
+        )}
+      </div>
       <Board board={board} handleMove={handleMove} />
     </>
   );

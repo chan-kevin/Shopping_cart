@@ -14,4 +14,6 @@
   height: 150px;
   background-color: lightgray;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 25px;
 }
