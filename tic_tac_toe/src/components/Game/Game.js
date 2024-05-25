@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import Board from "../Board/Board";
 import "./Game.css";
 
@@ -27,8 +27,6 @@ const Game = () => {
         setBoard(newBoard);
 
         if (checkWinning(rowIndex, colIndex)) setGameOver(true);
-      } else {
-        alert("please select another tile");
       }
     }
   };
@@ -132,7 +130,7 @@ const Game = () => {
           </h3>
         )}
       </div>
-      <Board board={board} handleMove={handleMove} />
+      <Board board={board} handleMove={handleMove} gameOver={gameOver} />
     </>
   );
 };
