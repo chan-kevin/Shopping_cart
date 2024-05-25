@@ -11,6 +11,7 @@ const Board = ({ board, handleMove }) => {
               className="tile"
               key={rowIndex.toString() + colIndex.toString()}
               onClick={() => handleMove(rowIndex, colIndex)}
+              style={tile === "X" ? { color: "blue" } : { color: "red" }}
             >
               {tile}
             </div>

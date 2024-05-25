@@ -16,12 +16,11 @@ const Game = () => {
   const [tileCount, setTileCount] = useState(0);
 
   const handleMove = (rowIndex, colIndex) => {
-    if (!gameOver || tileCount < 9) {
+    if (!gameOver && tileCount < 9) {
       if (board[rowIndex][colIndex].length === 0) {
         setCurrentPlayer(nextPlayer);
         setNextPlayer(currentPlayer);
         setTileCount((prev) => prev + 1);
-        console.log(tileCount);
 
         const newBoard = board.map((row) => [...row]);
         newBoard[rowIndex][colIndex] = currentPlayer;
@@ -45,6 +44,8 @@ const Game = () => {
       //diagonal
       { dx: 1, dy: 1 },
       { dx: -1, dy: -1 },
+      { dx: 1, dy: -1 },
+      { dx: -1, dy: 1 },
     ];
 
     for (let { dx, dy } of directions) {
@@ -84,15 +85,29 @@ const Game = () => {
     if (gameOver) {
       return (
         <>
-          <h3>Player {nextPlayer} wins</h3>
-          <button onClick={handleReset}>Reset</button>
+          <h3>
+            Player{" "}
+            <span
+              style={
+                currentPlayer === "O" ? { color: "blue" } : { color: "red" }
+              }
+            >
+              {nextPlayer}
+            </span>{" "}
+            wins
+          </h3>
+          <button onClick={handleReset} className="restart-btn">
+            Restart
+          </button>
         </>
       );
     } else if (tileCount === 9) {
       return (
         <>
           <h3>Draw</h3>
-          <button onClick={handleReset}>Reset</button>
+          <button onClick={handleReset} className="restart-btn">
+            Restart
+          </button>
         </>
       );
     }
@@ -105,7 +120,16 @@ const Game = () => {
         {gameOver || tileCount === 9 ? (
           handleGameFinished()
         ) : (
-          <h3>CurrentPlayer: {currentPlayer}</h3>
+          <h3>
+            CurrentPlayer:{" "}
+            <span
+              style={
+                currentPlayer === "X" ? { color: "blue" } : { color: "red" }
+              }
+            >
+              {currentPlayer}
+            </span>
+          </h3>
         )}
       </div>
       <Board board={board} handleMove={handleMove} />
