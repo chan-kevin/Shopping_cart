@@ -12,12 +12,15 @@ const Game = () => {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [nextPlayer, setNextPlayer] = useState("O");
   const [gameOver, setGameOver] = useState(false);
+  const [tileCount, setTileCount] = useState(0);
 
   const handleMove = (rowIndex, colIndex) => {
-    if (!gameOver) {
+    if (!gameOver || tileCount < 9) {
       if (board[rowIndex][colIndex].length === 0) {
         setCurrentPlayer(nextPlayer);
         setNextPlayer(currentPlayer);
+        setTileCount((prev) => prev + 1);
+        console.log(tileCount);
 
         const newBoard = board.map((row) => [...row]);
         newBoard[rowIndex][colIndex] = currentPlayer;
@@ -73,16 +76,32 @@ const Game = () => {
   const handleReset = () => {
     setBoard(createBoard);
     setGameOver(false);
+    setTileCount(0);
+  };
+
+  const handleGameFinished = () => {
+    if (gameOver) {
+      return (
+        <>
+          <h3>Player {nextPlayer} wins</h3>
+          <button onClick={handleReset}>Reset</button>
+        </>
+      );
+    } else if (tileCount === 9) {
+      return (
+        <>
+          <h3>Draw</h3>
+          <button onClick={handleReset}>Reset</button>
+        </>
+      );
+    }
   };
 
   return (
     <>
       <h1>Tic Tac Toe</h1>
-      {gameOver ? (
-        <>
-          <h3>Player {nextPlayer} wins</h3>
-          <button onClick={handleReset}>Reset</button>
-        </>
+      {gameOver || tileCount === 9 ? (
+        handleGameFinished()
       ) : (
         <h3>CurrentPlayer: {currentPlayer}</h3>
       )}
