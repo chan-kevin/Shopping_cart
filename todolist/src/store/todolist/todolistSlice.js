@@ -19,6 +19,20 @@ export const addTodo = createAsyncThunk("todos/addTodo", async (content) => {
   return response.json();
 });
 
+export const updateTodo = createAsyncThunk(
+  "todos/updateTodo",
+  async ({ id, content }) => {
+    const response = await fetch(baseURL + "/" + id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content }),
+    });
+    return response.json();
+  }
+);
+
 export const deleteTodo = createAsyncThunk("todos/deleteTodo", async (id) => {
   const response = await fetch(baseURL + "/" + id, {
     method: "DELETE",
@@ -37,6 +51,15 @@ const todolistSlice = createSlice({
       })
       .addCase(addTodo.fulfilled, (state, action) => {
         state.todos.unshift(action.payload);
+      })
+      .addCase(updateTodo.fulfilled, (state, action) => {
+        state.todos = state.todos.map((todo) => {
+          if (todo.id === action.payload.id) {
+            return { ...todo, content: action.payload.content };
+          } else {
+            return todo;
+          }
+        });
       })
       .addCase(deleteTodo.fulfilled, (state, action) => {
         state.todos = state.todos.filter(

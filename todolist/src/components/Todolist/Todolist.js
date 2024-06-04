@@ -5,12 +5,15 @@ import {
   addTodo,
   deleteTodo,
   getTodos,
+  updateTodo,
 } from "../../store/todolist/todolistSlice";
 
 const Todolist = () => {
   const todos = useSelector((state) => state.todolist.todos);
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
+  const [updateItem, setUpdateItem] = useState(null);
+  const [updateInput, setUpdateInput] = useState("");
   const [oddItemColor, setOddItemColor] = useState("lightpink");
   const [evenItemColor, setEvenItemColor] = useState("lightblue");
 
@@ -26,16 +29,32 @@ const Todolist = () => {
     setInput("");
   };
 
+  const handleEditButton = (id, prevContent) => {
+    setUpdateItem(id);
+    setUpdateInput(prevContent);
+  };
+
+  const handleUpdate = (todo) => {
+    dispatch(updateTodo(todo));
+    setUpdateItem(null);
+  };
+
   return (
     <div className="todolist-container">
       <h1>Todolist</h1>
 
-      <div className="add-container">
-        <input value={input} onChange={(e) => setInput(e.target.value)} />
-        <button onClick={handleAddTodo}>add</button>
+      <div>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="add-input"
+        />
+        <button onClick={handleAddTodo} className="btn">
+          Add
+        </button>
       </div>
 
-      <ul className="list-container">
+      <ul>
         {todos.map((todo, index) => (
           <div
             key={todo.id}
@@ -46,13 +65,40 @@ const Todolist = () => {
                 : { backgroundColor: oddItemColor }
             }
           >
-            <li className="todo">{todo.content}</li>
-            <button
-              onClick={() => dispatch(deleteTodo(todo.id))}
-              className="delete-btn"
-            >
-              delete
-            </button>
+            {updateItem === todo.id ? (
+              <input
+                value={updateInput}
+                onChange={(e) => setUpdateInput(e.target.value)}
+              />
+            ) : (
+              <li className="todo">{todo.content}</li>
+            )}
+
+            <div>
+              {updateItem === todo.id ? (
+                <button
+                  onClick={() =>
+                    handleUpdate({ id: todo.id, content: updateInput })
+                  }
+                  className="btn"
+                >
+                  Confirm
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleEditButton(todo.id, todo.content)}
+                  className="btn"
+                >
+                  Edit
+                </button>
+              )}
+              <button
+                onClick={() => dispatch(deleteTodo(todo.id))}
+                className="btn"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </ul>
