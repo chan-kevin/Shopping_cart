@@ -1,0 +1,19 @@
+.todolist-container {
+  width: 60vw;
+  margin: 0 auto;
+}
+
+.add-container {
+}
+
+.list-container {
+}
+
+.todo-contatiner {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+}
