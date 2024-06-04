@@ -6,7 +6,7 @@ import {
   deleteTodo,
   getTodos,
   updateTodo,
-} from "../../store/todolist/todolistSlice";
+} from "../../store/todolistSlice";
 
 const Todolist = () => {
   const todos = useSelector((state) => state.todolist.todos);
