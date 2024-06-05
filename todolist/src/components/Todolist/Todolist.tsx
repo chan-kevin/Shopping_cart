@@ -7,15 +7,21 @@ import {
   getTodos,
   updateTodo,
 } from "../../store/todolistSlice";
+import { AppDispatch, RootState } from "../../store/store";
+
+interface Todo {
+  id: number;
+  content: string;
+}
 
 const Todolist = () => {
-  const todos = useSelector((state) => state.todolist.todos);
-  const dispatch = useDispatch();
-  const [input, setInput] = useState("");
-  const [updateItem, setUpdateItem] = useState(null);
-  const [updateInput, setUpdateInput] = useState("");
-  const [oddItemColor, setOddItemColor] = useState("lightpink");
-  const [evenItemColor, setEvenItemColor] = useState("lightblue");
+  const todos = useSelector((state: RootState) => state.todolist.todos);
+  const dispatch = useDispatch<AppDispatch>();
+  const [input, setInput] = useState<string>("");
+  const [updateItem, setUpdateItem] = useState<null | number>(null);
+  const [updateInput, setUpdateInput] = useState<string>("");
+  const [oddItemColor, setOddItemColor] = useState<string>("lightpink");
+  const [evenItemColor, setEvenItemColor] = useState<string>("lightblue");
 
   useEffect(() => {
     dispatch(getTodos());
@@ -29,12 +35,12 @@ const Todolist = () => {
     setInput("");
   };
 
-  const handleEditButton = (id, prevContent) => {
+  const handleEditButton = (id: number, prevContent: string) => {
     setUpdateItem(id);
     setUpdateInput(prevContent);
   };
 
-  const handleUpdate = (todo) => {
+  const handleUpdate = (todo: Todo) => {
     dispatch(updateTodo(todo));
     setUpdateItem(null);
   };
@@ -55,7 +61,7 @@ const Todolist = () => {
       </div>
 
       <ul>
-        {todos.map((todo, index) => (
+        {todos.map((todo: Todo, index: number) => (
           <div
             key={todo.id}
             className="todo-contatiner"
