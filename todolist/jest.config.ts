@@ -2,12 +2,7 @@
  * For a detailed explanation regarding each configuration property and type check, visit:
  * https://jestjs.io/docs/configuration
  */
-{
-  "compilerOptions": {
-    "types": ["jest"],
-    // other compilerOptions...
-  }
-}
+
 export default {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -17,10 +12,7 @@ export default {
 
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/private/var/folders/p3/r9cfw83d3fg9zhs17vgst8x00000gn/T/jest_dx",
-  "compilerOptions": {
-    "types": ["jest"],
-    // other compilerOptions...
-  },
+
   // Automatically clear mock calls, instances and results before every test
   clearMocks: true,
 
