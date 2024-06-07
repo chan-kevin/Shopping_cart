@@ -1,0 +1,27 @@
+.board {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 450px;
+  margin: 0 auto;
+  gap: 5px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  background-color: lightgray;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.selected {
+  cursor: default;
+}
+
+.non-selected:hover {
+  background-color: rgb(149, 148, 148);
+}

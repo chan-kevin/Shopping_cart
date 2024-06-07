@@ -1,0 +1,77 @@
+{
+  "cart": [],
+  "inventory": [
+    {
+      "content": "apple",
+      "id": "1"
+    },
+    {
+      "content": "peach",
+      "id": "2"
+    },
+    {
+      "content": "orange",
+      "id": "3"
+    },
+    {
+      "content": "pear",
+      "id": "4"
+    },
+    {
+      "content": "lemon",
+      "id": "5"
+    },
+    {
+      "content": "grapes",
+      "id": "6"
+    },
+    {
+      "content": "lychee",
+      "id": "7"
+    },
+    {
+      "content": "cherry",
+      "id": "8"
+    },
+    {
+      "content": "coconut",
+      "id": "9"
+    },
+    {
+      "content": "durian",
+      "id": "10"
+    },
+    {
+      "content": "kiwi",
+      "id": "11"
+    },
+    {
+      "content": "mango",
+      "id": "12"
+    },
+    {
+      "content": "fig",
+      "id": "13"
+    },
+    {
+      "content": "longan",
+      "id": "14"
+    },
+    {
+      "content": "mulberry",
+      "id": "15"
+    },
+    {
+      "content": "lime",
+      "id": "16"
+    },
+    {
+      "content": "olive",
+      "id": "17"
+    },
+    {
+      "content": "starfruit",
+      "id": "18"
+    }
+  ]
+}

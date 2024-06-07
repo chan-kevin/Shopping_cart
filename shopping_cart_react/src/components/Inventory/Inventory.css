@@ -1,0 +1,17 @@
+.inventory {
+  width: 100%;
+}
+
+.inventory__item {
+  justify-content: space-between;
+}
+
+.inventory__subtract,
+.pagination__prev-btn {
+  background-color: rgb(133, 0, 0);
+}
+
+.inventory__plus,
+.pagination__next-btn {
+  background-color: rgb(4, 173, 4);
+}

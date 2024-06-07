@@ -1,0 +1,18 @@
+.stats {
+  height: 100px;
+}
+
+.restart-btn {
+  cursor: pointer;
+  border: none;
+  background-color: rgb(71, 176, 211);
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: white;
+}
+
+.restart-btn:hover {
+  background-color: rgb(108, 172, 194);
+}
