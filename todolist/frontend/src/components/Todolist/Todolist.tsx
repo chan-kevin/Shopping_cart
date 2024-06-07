@@ -10,7 +10,7 @@ import {
 import { AppDispatch, RootState } from "../../store/store";
 
 interface Todo {
-  id: number;
+  id: string;
   content: string;
 }
 
@@ -18,7 +18,7 @@ const Todolist = () => {
   const todos = useSelector((state: RootState) => state.todolist.todos);
   const dispatch = useDispatch<AppDispatch>();
   const [input, setInput] = useState<string>("");
-  const [updateItem, setUpdateItem] = useState<null | number>(null);
+  const [updateItem, setUpdateItem] = useState<null | string>(null);
   const [updateInput, setUpdateInput] = useState<string>("");
   const [oddItemColor, setOddItemColor] = useState<string>("lightpink");
   const [evenItemColor, setEvenItemColor] = useState<string>("lightblue");
@@ -35,7 +35,7 @@ const Todolist = () => {
     setInput("");
   };
 
-  const handleEditButton = (id: number, prevContent: string) => {
+  const handleEditButton = (id: string, prevContent: string) => {
     setUpdateItem(id);
     setUpdateInput(prevContent);
   };

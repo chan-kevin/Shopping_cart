@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface Todo {
-  id: number;
+  id: string;
   content: string;
 }
 
@@ -9,7 +9,7 @@ interface TodoState {
   todos: Todo[];
 }
 
-const baseURL = "http://localhost:3000/todos";
+const baseURL = "http://localhost:5000/todos";
 const initialState: TodoState = { todos: [] };
 
 export const getTodos = createAsyncThunk<Todo[]>("todos/getTodos", async () => {
@@ -33,7 +33,7 @@ export const addTodo = createAsyncThunk<Todo, string>(
 
 export const updateTodo = createAsyncThunk<
   Todo,
-  { id: number; content: string }
+  { id: string; content: string }
 >("todos/updateTodo", async ({ id, content }) => {
   const response = await fetch(baseURL + "/" + id, {
     method: "PATCH",
@@ -45,7 +45,7 @@ export const updateTodo = createAsyncThunk<
   return response.json();
 });
 
-export const deleteTodo = createAsyncThunk<{ id: number }, number>(
+export const deleteTodo = createAsyncThunk<{ id: string }, string>(
   "todos/deleteTodo",
   async (id) => {
     const response = await fetch(baseURL + "/" + id, {
@@ -87,7 +87,7 @@ const todolistSlice = createSlice({
       )
       .addCase(
         deleteTodo.fulfilled,
-        (state, action: PayloadAction<{ id: number }>) => {
+        (state, action: PayloadAction<{ id: string }>) => {
           state.todos = state.todos.filter(
             (todo) => todo.id !== action.payload.id
           );
