@@ -7,6 +7,7 @@ const { isProduction } = require("./config/keys");
 
 const jsonRouter = jsonServer.router("./db/db.json");
 const todosRoutes = require("./routes/todosRoutes");
+const usersRoutes = require("./routes/usersRoutes");
 const PORT = 5000;
 
 const app = express();
@@ -19,6 +20,7 @@ if (!isProduction) {
 }
 
 app.use("/todos", todosRoutes);
+app.use("/users", usersRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

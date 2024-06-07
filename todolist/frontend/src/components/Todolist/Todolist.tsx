@@ -8,6 +8,7 @@ import {
   updateTodo,
 } from "../../store/todolistSlice";
 import { AppDispatch, RootState } from "../../store/store";
+import Users from "../Users/Users";
 
 interface Todo {
   id: string;
@@ -48,6 +49,7 @@ const Todolist = () => {
   return (
     <div className="todolist-container">
       <h1>Todolist</h1>
+      <Users />
 
       <div>
         <input

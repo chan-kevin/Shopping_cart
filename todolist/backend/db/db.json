@@ -12,5 +12,11 @@
       "id": "2c3a9dce-312d-465d-a91c-6275025d5cf1",
       "content": "test2"
     }
+  ],
+  "users": [
+    {
+      "username": "test",
+      "password": "$2b$10$TGruT.JXgGqdjUBNsjDxR.bCfOVLYNqMupEFDDGBSjOzfe9iBxbFC"
+    }
   ]
 }
