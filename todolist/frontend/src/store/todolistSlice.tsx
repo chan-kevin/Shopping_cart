@@ -20,14 +20,18 @@ export const getTodos = createAsyncThunk<Todo[]>("todos/getTodos", async () => {
 export const addTodo = createAsyncThunk<Todo, string>(
   "todos/addTodo",
   async (content) => {
-    const response = await fetch(baseURL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ content }),
-    });
-    return response.json();
+    try {
+      const response = await fetch(baseURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
+      return response.json();
+    } catch (err) {
+      alert("failed to add todo");
+    }
   }
 );
 
@@ -35,23 +39,31 @@ export const updateTodo = createAsyncThunk<
   Todo,
   { id: string; content: string }
 >("todos/updateTodo", async ({ id, content }) => {
-  const response = await fetch(baseURL + "/" + id, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ content }),
-  });
-  return response.json();
+  try {
+    const response = await fetch(baseURL + "/" + id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content }),
+    });
+    return response.json();
+  } catch (err) {
+    alert("failed to update todo");
+  }
 });
 
 export const deleteTodo = createAsyncThunk<{ id: string }, string>(
   "todos/deleteTodo",
   async (id) => {
-    const response = await fetch(baseURL + "/" + id, {
-      method: "DELETE",
-    });
-    return response.json();
+    try {
+      const response = await fetch(baseURL + "/" + id, {
+        method: "DELETE",
+      });
+      return response.json();
+    } catch (err) {
+      alert("failed to delete todo");
+    }
   }
 );
 
