@@ -63,6 +63,7 @@ const SearchBar = () => {
                 value={book.title}
                 className="search-book"
                 key={book.id}
+                data-testid="test-booklist-option"
               />
             ))}
         </datalist>
