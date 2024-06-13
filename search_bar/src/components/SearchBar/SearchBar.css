@@ -1,0 +1,33 @@
+.input-container {
+  margin-top: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.search-input,
+.search-book,
+.search-output {
+  width: 30vw;
+  height: 3vh;
+}
+
+.search-output {
+  margin-top: 5px;
+  height: 12vh;
+  overflow-y: scroll;
+  border: 1px solid lightgray;
+}
+
+.search-book {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 5px;
+}
+
+.search-book:hover {
+  background-color: rgb(187, 184, 184);
+  cursor: pointer;
+}
