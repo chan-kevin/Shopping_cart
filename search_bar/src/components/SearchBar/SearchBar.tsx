@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./SearchBar.css";
+import SelectedBook from "../SelectedBook/SelectedBook";
 
-interface Book {
+export interface Book {
   id: string;
   title: string;
   authors: [];
@@ -19,11 +20,11 @@ const SearchBar = () => {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&startIndex=0&maxResults=20`
+          `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=0&maxResults=20`
         );
         const data = await response.json();
 
-        const booksInfo = data.items.map((book: any) => {
+        const booksInfo = data.items?.map((book: any) => {
           return {
             id: book.id,
             title: book.volumeInfo.title,
@@ -32,7 +33,7 @@ const SearchBar = () => {
           };
         });
 
-        setBooks(booksInfo);
+        setBooks(booksInfo ?? []);
       } catch (error) {
         console.log(error);
       }
@@ -68,23 +69,17 @@ const SearchBar = () => {
     }
   };
 
+  const handleBlur = () => {
+    setTimeout(() => {
+      setOnQuery(false);
+    }, 100);
+  };
+
   return (
     <div>
-      <div
-        className="input-container"
-        onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-          e.stopPropagation();
-          setOnQuery(false);
-          setSelectedBookIndex(-1);
-        }}
-      >
+      <div className="input-container">
         <input
-          // list="book-list"
           value={query}
-          onClick={(e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-            e.stopPropagation();
-            setOnQuery(true);
-          }}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setQuery(e.target.value);
             setOnQuery(true);
@@ -93,17 +88,14 @@ const SearchBar = () => {
           className="search-input"
           placeholder="Book"
           data-testid="test-searchbar"
+          onFocus={() => setOnQuery(true)}
+          onBlur={handleBlur}
         />
 
-        {onQuery && books.length !== 0 ? (
-          <ul
-            className="search-output"
-            // id="book-list"
-            data-testid="test-booklist"
-          >
-            {books.map((book, index) => (
+        {onQuery && books.length !== 0 && query ? (
+          <ul className="search-output" data-testid="test-booklist">
+            {books?.map((book, index) => (
               <li
-                // value={book.title}
                 className={`search-book ${
                   index === selectedBookIndex ? "selected" : ""
                 }`}
@@ -119,22 +111,7 @@ const SearchBar = () => {
         ) : null}
       </div>
 
-      <div className="selected-book">
-        <div>
-          <span className="subject">Title: </span>
-          <span>{selectedBook?.title}</span>
-        </div>
-        <div>
-          <span className="subject">Author(s): </span>
-          {selectedBook?.authors.map((author) => (
-            <span key={author}>{author} </span>
-          ))}
-        </div>
-        <div>
-          <span className="subject">Description: </span>
-          {selectedBook?.description}
-        </div>
-      </div>
+      <SelectedBook selectedBook={selectedBook} />
     </div>
   );
 };
