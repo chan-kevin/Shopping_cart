@@ -1,6 +1,8 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./SearchBar.css";
 import SelectedBook from "../SelectedBook/SelectedBook";
+import { useDebounce, useThrottle } from "../CustomHooks/CustomHooks";
+import fetchBooks from "../API/getBooks";
 
 export interface Book {
   id: string;
@@ -15,32 +17,29 @@ const SearchBar = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [selectedBookIndex, setSelectedBookIndex] = useState<number>(-1);
+  const debounceQuery = useDebounce<string>(query, 500);
+  const throttleQuery = useThrottle<string>(query, 2000);
+
+  const fetchAndSetBooks = async () => {
+    const booksInfo = await fetchBooks(query);
+    setBooks(booksInfo ?? []);
+  };
+
+  // debounce
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=0&maxResults=20`
-        );
-        const data = await response.json();
+    if (debounceQuery) {
+      fetchAndSetBooks();
+    }
+  }, [debounceQuery]);
 
-        const booksInfo = data.items?.map((book: any) => {
-          return {
-            id: book.id,
-            title: book.volumeInfo.title,
-            authors: book.volumeInfo.authors,
-            description: book.volumeInfo.description,
-          };
-        });
+  // throttle
 
-        setBooks(booksInfo ?? []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (query) fetchBooks();
-  }, [query]);
+  // useEffect(() => {
+  //   if (throttleQuery) {
+  //     fetchAndSetBooks();
+  //   }
+  // }, [throttleQuery]);
 
   const handleSelect = (book: Book) => {
     setSelectedBook(book);
@@ -72,25 +71,34 @@ const SearchBar = () => {
   const handleBlur = () => {
     setTimeout(() => {
       setOnQuery(false);
-    }, 100);
+    }, 300);
   };
 
   return (
     <div>
-      <div className="input-container">
-        <input
-          value={query}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setQuery(e.target.value);
-            setOnQuery(true);
-          }}
-          onKeyDown={handleKey}
-          className="search-input"
-          placeholder="Book"
-          data-testid="test-searchbar"
-          onFocus={() => setOnQuery(true)}
-          onBlur={handleBlur}
-        />
+      <div className="search-container">
+        <div className="input-container">
+          <input
+            value={query}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setQuery(e.target.value);
+              setOnQuery(true);
+            }}
+            onKeyDown={handleKey}
+            className="search-input"
+            placeholder="Book"
+            data-testid="test-searchbar"
+            onFocus={() => setOnQuery(true)}
+            onBlur={handleBlur}
+          />
+          <button
+            className="clearInput"
+            onClick={() => setQuery("")}
+            style={{ display: query.length === 0 ? "none" : "block" }}
+          >
+            x
+          </button>
+        </div>
 
         {onQuery && books.length !== 0 && query ? (
           <ul className="search-output" data-testid="test-booklist">

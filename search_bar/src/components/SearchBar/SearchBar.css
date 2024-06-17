@@ -1,9 +1,26 @@
-.input-container {
+.search-container {
   margin-top: 5vh;
   display: flex;
   align-items: center;
   flex-direction: column;
   min-height: 30vh;
+}
+
+.input-container {
+  position: relative;
+}
+
+.clearInput {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 18px;
+  border: none;
+  background-color: white;
+  color: rgb(144, 144, 144);
 }
 
 .search-input,
@@ -15,6 +32,9 @@
 
 .search-input {
   padding: 0 10px;
+  height: 40px;
+  border-radius: 5px;
+  border: 2px solid lightgray;
 }
 
 .search-output {
@@ -23,6 +43,21 @@
   overflow-y: scroll;
   border: 1px solid lightgray;
   padding-inline-start: 0;
+  overflow-x: hidden;
+}
+
+.search-output::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.search-output::-webkit-scrollbar:vertical {
+  width: 15px;
+}
+
+.search-output::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .search-book {
@@ -30,6 +65,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 5px;
+  padding-right: 25px;
 }
 
 .selected {
